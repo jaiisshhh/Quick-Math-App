@@ -134,26 +134,35 @@
         color: var(--text-color);
       }
 
-      /* --- Question Area --- */
+      /* --- Question Area Updates --- */
       .question-container {
         flex: 1;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        font-size: 4.5rem;
+
+        /* CHANGED: Smaller font for mobile to prevent overflow */
+        font-size: 3.5rem;
         font-weight: 700;
+
+        /* ADDED: Prevents numbers from wrapping to a new line */
+        white-space: nowrap;
+      }
+
+      /* Add this to handle very small screens (like iPhone SE) */
+      @media (max-width: 380px) {
+        .question-container {
+          font-size: 2.8rem;
+        }
       }
 
       .input-display {
-        min-height: 4.5rem;
+        /* CHANGED: Match the new font size */
+        min-height: 3.5rem;
         color: var(--accent-color);
         margin-top: 10px;
         border-bottom: 3px solid transparent;
-      }
-
-      .input-display.active {
-        border-bottom: 3px solid #ddd;
       }
 
       /* --- Keypad Updates --- */
