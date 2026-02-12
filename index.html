@@ -13,7 +13,6 @@
         --text-color: #333;
         --accent-color: #007aff;
         --error-color: #ff3b30;
-        --success-color: #34c759;
         --keypad-bg: #fff;
       }
 
@@ -33,8 +32,13 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 100vh;
+
+        /* FIX 1: Use 100dvh to prevent browser bar from hiding content */
+        height: 100dvh;
         overflow: hidden;
+
+        /* FIX 2: Add padding for iPhone 'Home' swipe bar */
+        padding-bottom: env(safe-area-inset-bottom);
       }
 
       /* --- Layout Containers --- */
@@ -47,7 +51,6 @@
         display: flex;
         flex-direction: column;
         padding: 20px;
-        justify-content: center;
       }
 
       #game-screen {
@@ -55,66 +58,6 @@
       }
       .hidden {
         display: none !important;
-      }
-
-      /* --- Start Screen --- */
-      #start-screen {
-        text-align: center;
-        align-items: center;
-      }
-
-      .hero-title {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: var(--accent-color);
-        margin-bottom: 10px;
-        line-height: 1.2;
-      }
-
-      .hero-subtitle {
-        font-size: 1.1rem;
-        color: #666;
-        margin-bottom: 40px;
-      }
-
-      .instruction-box {
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        margin-bottom: 40px;
-        width: 100%;
-        text-align: left;
-      }
-
-      .instruction-box h3 {
-        margin-top: 0;
-        color: #333;
-      }
-      .instruction-box ul {
-        padding-left: 20px;
-        color: #555;
-      }
-      .instruction-box li {
-        margin-bottom: 8px;
-      }
-
-      .btn-primary {
-        background: var(--accent-color);
-        color: white;
-        border: none;
-        padding: 20px 40px;
-        font-size: 1.5rem;
-        font-weight: bold;
-        border-radius: 12px;
-        cursor: pointer;
-        width: 100%;
-        box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);
-        transition: transform 0.1s;
-      }
-      .btn-primary:active {
-        transform: scale(0.98);
-        background: #005bb5;
       }
 
       /* --- Header & Timer --- */
@@ -126,6 +69,7 @@
         font-size: 1.2rem;
         color: #666;
         height: 50px;
+        flex-shrink: 0; /* Prevents header from shrinking */
       }
 
       #timer {
@@ -134,23 +78,21 @@
         color: var(--text-color);
       }
 
-      /* --- Question Area Updates --- */
+      /* --- Question Area --- */
       .question-container {
-        flex: 1;
+        flex: 1; /* Takes up all available middle space */
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
 
-        /* CHANGED: Smaller font for mobile to prevent overflow */
+        /* Responsive Font Sizes */
         font-size: 3.5rem;
         font-weight: 700;
-
-        /* ADDED: Prevents numbers from wrapping to a new line */
-        white-space: nowrap;
+        white-space: nowrap; /* Prevents wrapping */
       }
 
-      /* Add this to handle very small screens (like iPhone SE) */
+      /* Smaller font for small phones */
       @media (max-width: 380px) {
         .question-container {
           font-size: 2.8rem;
@@ -158,24 +100,26 @@
       }
 
       .input-display {
-        /* CHANGED: Match the new font size */
-        min-height: 3.5rem;
+        min-height: 4rem;
         color: var(--accent-color);
         margin-top: 10px;
         border-bottom: 3px solid transparent;
       }
+      .input-display.active {
+        border-bottom: 3px solid #ddd;
+      }
 
-      /* --- Keypad Updates --- */
+      /* --- Keypad (The Main Fixes) --- */
       .keypad {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 15px;
-        padding-bottom: 30px;
-        margin-top: auto;
+        gap: 12px;
+        padding-bottom: 10px;
+        margin-top: auto; /* Pushes keypad to bottom */
 
-        /* ADDED: Forces the grid to stretch out */
+        /* FIX 3: Force width and centering to prevent "skinny" look */
         width: 100%;
-        max-width: 400px; /* Keeps it neat on desktop */
+        max-width: 380px;
         margin-left: auto;
         margin-right: auto;
       }
@@ -185,13 +129,13 @@
         border: 1px solid #ddd;
         border-radius: 12px;
 
-        /* CHANGED: Uniform padding and set height ratio */
-        padding: 0;
-        height: 80px; /* Fixed height for consistency */
+        /* FIX 4: Use aspect-ratio to make them perfect rectangles, not pills */
+        aspect-ratio: 1.5;
+        height: auto;
+
         display: flex;
         align-items: center;
         justify-content: center;
-
         font-size: 1.8rem;
         cursor: pointer;
         box-shadow: 0 4px 0px rgba(0, 0, 0, 0.1);
@@ -214,58 +158,43 @@
         border-color: #ffcccc;
       }
 
-      /* --- Animations --- */
-      @keyframes shake {
-        0% {
-          transform: translate(1px, 1px) rotate(0deg);
-        }
-        10% {
-          transform: translate(-1px, -2px) rotate(-1deg);
-        }
-        20% {
-          transform: translate(-3px, 0px) rotate(1deg);
-        }
-        30% {
-          transform: translate(3px, 2px) rotate(0deg);
-        }
-        40% {
-          transform: translate(1px, -1px) rotate(1deg);
-        }
-        50% {
-          transform: translate(-1px, 2px) rotate(-1deg);
-        }
-        60% {
-          transform: translate(-3px, 1px) rotate(0deg);
-        }
-        100% {
-          transform: translate(0, 0) rotate(0deg);
-        }
-      }
-
-      @keyframes flash-green {
-        0% {
-          background-color: var(--bg-color);
-        }
-        50% {
-          background-color: rgba(52, 199, 89, 0.2);
-        }
-        100% {
-          background-color: var(--bg-color);
-        }
-      }
-
-      .shake-anim {
-        animation: shake 0.4s;
-        color: var(--error-color);
-      }
-      .flash-anim {
-        animation: flash-green 0.3s;
-      }
-
-      /* --- Summary Screen --- */
-      #summary-screen h2 {
+      /* --- Start & Summary Screens --- */
+      #start-screen,
+      #summary-screen {
+        justify-content: center;
+        align-items: center;
         text-align: center;
-        margin-bottom: 30px;
+      }
+      .hero-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--accent-color);
+        margin-bottom: 10px;
+      }
+      .hero-subtitle {
+        font-size: 1.1rem;
+        color: #666;
+        margin-bottom: 40px;
+      }
+      .instruction-box {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 40px;
+        text-align: left;
+        width: 100%;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+      .btn-primary {
+        background: var(--accent-color);
+        color: white;
+        border: none;
+        padding: 20px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border-radius: 12px;
+        cursor: pointer;
+        width: 100%;
       }
 
       .stats-table {
@@ -274,16 +203,11 @@
         font-size: 0.9rem;
         margin-bottom: 20px;
       }
-
       .stats-table th,
       .stats-table td {
         text-align: left;
         padding: 10px;
         border-bottom: 1px solid #eee;
-      }
-      .stats-table th {
-        color: #888;
-        font-weight: 500;
       }
       .stats-table td.time-col {
         text-align: right;
@@ -295,16 +219,35 @@
         border-top: 2px solid #333;
       }
 
-      @media (min-width: 768px) {
-        .question-container {
-          font-size: 6rem;
+      /* --- Animations --- */
+      @keyframes shake {
+        0% {
+          transform: translate(1px, 1px);
         }
-        .keypad {
-          gap: 20px;
-          max-width: 400px;
-          margin-left: auto;
-          margin-right: auto;
+        50% {
+          transform: translate(-1px, 2px);
         }
+        100% {
+          transform: translate(0, 0);
+        }
+      }
+      @keyframes flash-green {
+        0% {
+          background: var(--bg-color);
+        }
+        50% {
+          background: rgba(52, 199, 89, 0.2);
+        }
+        100% {
+          background: var(--bg-color);
+        }
+      }
+      .shake-anim {
+        animation: shake 0.4s;
+        color: var(--error-color);
+      }
+      .flash-anim {
+        animation: flash-green 0.3s;
       }
     </style>
   </head>
